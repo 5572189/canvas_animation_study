@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wave with drawing api</title>
+    <style>
+    #range {
+        width: 300px;
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.6);
+        -webkit-border-radius: 5px;
+        -webkit-appearance: none !important;
+    }
+
+    #range::-webkit-slider-thumb {
+        width: 15px;
+        height: 15px;
+        background: -webkit-gradient(
+            linear,
+            left top,
+            left bottom,
+            from(#fff),
+            to(#ccc)
+        );
+        border: 1px solid #444;
+        -webkit-box-shadow: 0 0 3px #000;
+        -webkit-border-radius: 14px;
+        -webkit-appearance: none !important;
+    }
+
+    #ranVau {
+        text-align: center;
+        border: 1px solid #ccc;
+        width: 32px;
+        margin-left: 10px;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <div>
+        <p>振幅：<input type="range" id="range" min="0" max="200" value="50" step="1"><input type="text" id="ranVau" value="50"></p>
+    </div>
+    <script src="../js/utils.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d'),
+                    oRange = document.querySelector('#range'),
+                    oRanVau = document.querySelector('#ranVau');
+
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffffff';
+
+                var angle = 0,
+                    range = 50,
+                    xSpeed = 0.5,
+                    ySpeed = 0.05,
+                    xPos = 0,
+                    yPos = canvas.height / 2;
+
+                stdLine();
+                drawFrame();
+
+                oRange.addEventListener('change', function(event) {
+                    event = event || window.event;
+                    xPos = 0;
+                    yPos = canvas.height / 2;
+
+                    range = this.value;
+                    oRanVau.value = this.value;
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    stdLine();
+                    drawFrame();
+                }, false);
+
+                function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+
+                    ctx.beginPath();
+                    ctx.moveTo(xPos, yPos);
+                    xPos += xSpeed;
+                    angle += ySpeed;
+                    yPos = canvas.height / 2 + Math.sin(angle) * range;
+                    ctx.lineTo(xPos, yPos);
+                    ctx.stroke();
+                }
+
+                function stdLine() {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(xPos, yPos);
+                    ctx.lineTo(canvas.width, yPos);
+                    ctx.closePath();
+                    ctx.strokeStyle = '#479';
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>

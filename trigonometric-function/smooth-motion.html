@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var ball = new Ball();
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height / 2;
+
+                var angle = 0,
+                    range = 50; // 振幅
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    ball.x = canvas.width / 2 + Math.sin(angle) * range;
+                    angle += 0.1;
+
+                    ball.draw(ctx);
+                })();
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Circle Motion</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var ball = new Ball();
+
+                var angle = 0, // 旋转角度
+                    centerX = canvas.width / 2,
+                    centerY = canvas.height / 2,
+                    radius = 100, // 定义半径
+                    speed = 0.05;
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // centerX, centerY 的作用是让球绕画布中心旋转
+                    ball.x = centerX + Math.sin(angle) * radius;
+                    ball.y = centerY + Math.cos(angle) * radius;
+                    angle += speed;
+
+                    ball.draw(ctx);
+                })();
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>

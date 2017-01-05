@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Linear Motion</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var angle = 0,
+                    range = 50,
+                    xSpeed = 1,
+                    ySpeed = 0.05;
+
+                var ball = new Ball();
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    ball.x += xSpeed;
+                    if(ball.x > canvas.width + ball.radius) {
+                        ball.x = -ball.radius;
+                    }
+
+                    ball.y = canvas.height / 2 + Math.sin(angle) * range;
+                    ball.draw(ctx);
+                })();
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>
