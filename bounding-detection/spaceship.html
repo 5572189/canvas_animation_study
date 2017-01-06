@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Space ship</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/spaceship.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var ship = new SpaceShip();
+                ship.x = canvas.width / 2;
+                ship.y = canvas.height / 2;
+
+                // 初始化
+                var vr = 0,
+                    vx = 0,
+                    vy = 0,
+                    ax = 0,
+                    ay = 0,
+                    angle = 0,
+                    thrust = 0;
+
+                // 通过方向键控制各变量的值
+                window.addEventListener('keydown', function(event) {
+                    event = event || window.event;
+
+                    switch(event.keyCode) {
+                        case 37: // left
+                            vr = -3;
+                            vx = 0;
+                            vy = 0;
+                            break;
+                        case 39: // right
+                            vr = 3;
+                            vx = 0;
+                            vy = 0;
+                            break;
+                        case 38: // up
+                            ship.showFlame = true;
+                            thrust = 0.05;
+                            break;
+                        case 40: // stop
+                            ax = 0;
+                            ay = 0;
+                            vx = 0;
+                            vy = 0;
+                            break;
+                    }
+                }, false);
+
+                window.addEventListener('keyup', function(event) {
+                    vr = 0;
+                    thrust = 0;
+                    ship.showFlame = false;
+                }, false);
+
+                (function drawFlame() {
+                    window.requestAnimationFrame(drawFlame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 角度
+                    angle += vr * Math.PI / 180;
+                    ship.rotation = angle;
+                    ax = Math.cos(angle) * thrust;
+                    ay = Math.sin(angle) * thrust;
+
+                    vx += ax;
+                    vy += ay;
+
+                    ship.x += vx;
+                    ship.y += vy;
+
+                    // core code
+                    if (ship.x - ship.width / 2 > canvas.width) {
+                        ship.x = 0;
+                    }
+                    if (ship.x < 0) {
+                        ship.x = canvas.width;
+                    }
+                    if (ship.y - ship.height / 2 > canvas.height) {
+                        ship.y = 0;
+                    }
+                    if (ship.y < 0) {
+                        ship.y = canvas.height;
+                    }
+
+                    ship.draw(ctx);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>

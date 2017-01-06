@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Spaceship with friction</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/spaceship.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var ship = new SpaceShip();
+                ship.x = canvas.width / 2;
+                ship.y = canvas.height / 2;
+
+                // 初始化
+                var f = 0.97,
+                    vr = 0,
+                    vx = 0,
+                    vy = 0,
+                    ax = 0,
+                    ay = 0,
+                    angle = 0,
+                    speed = 0;
+
+                // 通过方向键控制各变量的值
+                window.addEventListener('keydown', function(event) {
+                    event = event || window.event;
+
+                    switch (event.keyCode) {
+                        case 37: // left
+                            vr = -3;
+                            break;
+                        case 39: // right
+                            vr = 3;
+                            break;
+                        case 38: // move
+                            ship.showFlame = true;
+                            speed = 0.5;
+                            break;
+                    }
+                }, false);
+
+                window.addEventListener('keyup', function(event) {
+                    vr = 0;
+                    speed = 0;
+                    ship.showFlame = false;
+                }, false);
+
+                (function drawFlame() {
+                    window.requestAnimationFrame(drawFlame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 角度
+                    angle += vr * Math.PI / 180;
+                    ship.rotation = angle;
+
+                    ax = Math.cos(angle) * speed;
+                    ay = Math.sin(angle) * speed;
+
+                    vx += ax;
+                    vy += ay;
+
+                    // 摩擦力
+                    vx *= f;
+                    vy *= f;
+
+                    ship.x += vx;
+                    ship.y += vy;
+
+                    // 边界检测
+                    if (ship.x + ship.width / 2 > canvas.width) {
+                        ship.x = canvas.width - ship.width;
+                        vx *= -1;
+                    } else if (ship.x < ship.width / 2) {
+                        ship.x = ship.width / 2;
+                        vx *= -1;
+                    }
+                    if (ship.y + ship.height / 2 > canvas.height) {
+                        ship.y = canvas.height - ship.height / 2;
+                        vy *= -1;
+                    } else if (ship.y < ship.height / 2) {
+                        ship.y = ship.height / 2;
+                        vy *= -1;
+                    }
+
+                    ship.draw(ctx);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+
+</html>

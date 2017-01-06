@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>超出边界重新形成</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <div id="log"></div>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d'),
+                    log = document.querySelector('#log');
+
+                var balls = [],
+                    numBall = 10,
+                    canvasW = canvas.width,
+                    canvasH = canvas.height;
+
+                // 定义10个小球
+                for (var i = 0; i < numBall; i++) {
+                    var size = Math.random() * 20 + 5,
+                        color = Math.random() * (0xffffff),
+                        ball = new Ball(size, color);
+
+                    ball.id = 'ball_' + i;
+                    ball.radius = Math.random() * 30 + 10;
+                    ball.x = Math.random() * canvasW;
+                    ball.y = Math.random() * canvasH;
+                    ball.vx = Math.random() * 2 - 1;
+                    ball.vy = Math.random() * 2 - 1;
+
+                    balls.push(ball);
+                }
+
+                // 定义draw函数
+                function draw(ball, pos) {
+                    // 让小球加上它的速度值
+                    ball.x += ball.vx;
+                    ball.y += ball.vy;
+
+                    // 判断是否超出边界，不论超出哪一边
+                    if (ball.x - ball.radius > canvas.width ||
+                        ball.radius + ball.x < 0 ||
+                        ball.y - ball.radius > canvas.height ||
+                        ball.radius + ball.y < 0) {
+
+                        // 超出了边界重置速度和坐标
+                        ball.x = canvas.width / 2;
+                        ball.y = canvas.height;
+                        ball.vx = Math.random() * 2 - 1;
+                        ball.vy = Math.random() * 2 - 1;
+                    }
+
+                    ball.draw(ctx);
+                }
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 定义初始变量 i 为小球的数量，并且会随着小球的移除减小
+                    balls.forEach(draw);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+
+</html>
