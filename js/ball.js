@@ -14,6 +14,7 @@ function Ball(radius, color) {
     this.name = '';
     this.color = utils.parseColor(color);
     this.lineWidth = 1;
+    this.isMousedown = false;
 }
 
 Ball.prototype.draw = function(ctx) {

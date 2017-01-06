@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Drag ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d'),
+                    mouse = utils.captureMouse(canvas),
+                    ball = new Ball(20, 'red');
+
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height / 2;
+
+                var w = 0,
+                    h = 0;
+
+                // 为canvas设置监听事件
+                canvas.addEventListener('mousedown', function(event) {
+                    event = event || window.event;
+
+                    // 判断是否点击在球体上
+                    if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                        w = mouse.x - ball.x;
+                        h = mouse.y - ball.y;
+                        // mouseup
+                        canvas.addEventListener('mouseup', handler4Mouseup, false);
+                        // mousemove
+                        canvas.addEventListener('mousemove', handler4Mousemove, false);
+                    }
+                }, false);
+
+                // mouseup 事件处理函数
+                function handler4Mouseup(event) {
+                    canvas.removeEventListener('mouseup', handler4Mouseup, false);
+                    canvas.removeEventListener('mousemove', handler4Mousemove, false);
+                }
+
+                // mousemove 事件处理函数
+                function handler4Mousemove(event) {
+                    ball.x = mouse.x - w;
+                    ball.y = mouse.y - h;
+                }
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    ball.draw(ctx);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+
+</html>

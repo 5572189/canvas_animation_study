@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mouse event</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <textarea name="textarea" id="txt" cols="30" rows="10" col="30"></textarea>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d'),
+                    log = document.querySelector('#txt');
+
+                var mouse = utils.captureMouse(canvas);
+
+                var ball = new Ball(20, 'red');
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height / 2;
+                ball.draw(ctx);
+
+                // 定义状态函数
+                function state(word) {
+                    if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                        log.value = 'in ball : ' + word;
+                    } else {
+                        log.value = 'canvas : ' + word;
+                    }
+                }
+
+                canvas.addEventListener('mousedown', function(event) {
+                    event = event || window.event;
+                    state('mousedown');
+
+                    // mouseup
+                    canvas.addEventListener('mouseup', function(event) {
+                        event = event || window.event;
+                        state('mouseup');
+                    }, false);
+
+                    // mousemove
+                    canvas.addEventListener('mousemove', function(event) {
+                        event = event || window.event;
+                        state('mousemove');
+                    }, false);
+                }, false);
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>
