@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Angle accelerate motion</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/ball.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                var ball = new Ball();
+                ball.x = 0;
+                ball.y = 0;
+
+                var vx = 0, // x轴方向速度
+                    vy = 0, // y轴方向速度
+                    ax = 0, // x轴方向加速度
+                    ay = 0, // y轴方向加速度
+                    angle = 45, // 运动方向
+                    aTotal = 0.05; // 加速度
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 加速度分解
+                    ax = Math.cos(angle * Math.PI / 180) * aTotal;
+                    ay = Math.sin(angle * Math.PI / 180) * aTotal;
+
+                    vx += ax;
+                    vy += ay;
+
+                    ball.x += vx;
+                    ball.y += vy;
+
+                    ball.draw(ctx);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>

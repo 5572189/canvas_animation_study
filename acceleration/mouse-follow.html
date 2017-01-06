@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mouse follow</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500" style="background-color: #000009;">
+        <p>your browser not support canvas!</p>
+    </canvas>
+    <script src="../js/utils.js"></script>
+    <script src="../js/arrow.js"></script>
+    <script>
+        (function(window, document) {
+            window.addEventListener('DOMContentLoaded', function(e) {
+                var canvas = document.querySelector('#canvas'),
+                    ctx = canvas.getContext('2d');
+
+                // 获取鼠标相对canvas的位置
+                var mouse = utils.captureMouse(canvas);
+
+                var arrow = new Arrow();
+                arrow.x = canvas.width / 2;
+                arrow.y = canvas.height / 2;
+
+                var angle = 0,
+                    speed = 2;
+
+                // 角度计算
+                function lerpAngle(a, b, t) {
+                    var d = b - a;
+                    if (d > Math.PI) {
+                        d = d - 2 * Math.PI;
+                    }
+                    if (d < -Math.PI) {
+                        d = d + 2 * Math.PI;
+                    }
+                    return a + d * t;
+                }
+
+                // 计算距离
+                function lerpDistance(aim, cur, ratio) {
+                    var delta = cur - aim;
+                    return aim + delta * ratio;
+                }
+
+                (function drawFrame() {
+                    window.requestAnimationFrame(drawFrame, canvas);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    arrow.x = lerpDistance(mouse.x, arrow.x, 0.95);
+                    arrow.y = lerpDistance(mouse.y, arrow.y, 0.95);
+
+                    var dx = mouse.x - arrow.x,
+                        dy = mouse.y - arrow.y;
+
+                    var beta = Math.atan2(dy, dx) + Math.PI;
+
+                    angle = lerpAngle(beta, angle, 0.1);
+
+                    arrow.rotation = angle + Math.PI;
+
+                    var vx = Math.cos(angle) * speed,
+                        vy = Math.sin(angle) * speed;
+
+                    arrow.x += vx;
+                    arrow.y += vy;
+
+                    arrow.draw(ctx);
+                })();
+
+            }, false);
+        })(window, document);
+    </script>
+</body>
+</html>
